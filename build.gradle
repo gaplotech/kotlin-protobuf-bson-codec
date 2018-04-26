@@ -15,7 +15,7 @@ buildscript {
 }
 
 group 'io.github.gaplotech'
-version '0.1'
+version '0.1.1'
 
 apply plugin: 'idea'
 apply plugin: 'java'
@@ -52,9 +52,9 @@ dependencies {
 
 sourceSets {
 
-    main {
+    test {
         java {
-            srcDirs += "${protobuf.generatedFilesBaseDir}/main/java"
+            srcDirs += "${protobuf.generatedFilesBaseDir}/test/kotlin"
         }
     }
 
@@ -133,6 +133,8 @@ uploadArchives {
                         id 'gaplotech'
                         name 'Gary LO'
                         email 'gaplotech@gmail.com'
+                        organization 'Gap撈Tech'
+                        organizationUrl 'https://blog.gaplotech.com'
                     }
                 }
             }
