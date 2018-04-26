@@ -41,13 +41,15 @@ import io.github.gaplotech.PBCodec
 import org.bson.codecs.Codec
 import io.github.gaplotech.pb.Test.*
 
+// base mongo repository
 abstract class MongoRepository<T: Any>(databaseName: String) {
-    private val client = MongoClients.create() //get com.mongodb.async.client.MongoClient new instance
-    protected val database: MongoDatabase = client.getDatabase(databaseName)  //normal java driver usage
-    protected abstract val collection: MongoCollection<T> //KMongo extension method
+    private val client = MongoClients.create()
+    protected val database: MongoDatabase = client.getDatabase(databaseName)
+    protected abstract val collection: MongoCollection<T>
 
 }
 
+// generic for protobuf repository
 abstract class MongoPBRepository<T: Message>(databaseName: String): MongoRepository<T>(databaseName) {
     inline fun <reified T: Message> getCollectionWithCodec(collectionName: String): MongoCollection<T> {
         val codec: Codec<T> = PBCodec(clazz = T::class.java)
@@ -64,6 +66,7 @@ abstract class MongoPBRepository<T: Message>(databaseName: String): MongoReposit
 
 }
 
+// specific protobuf type to extends MongoPBRepository<T: Message>
 class MyTestV3Repository: MongoPBRepository<MyTestV3>("protodb") {
     override val collection: MongoCollection<MyTestV3>
         get() = getCollectionWithCodec("mytestv3")
