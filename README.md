@@ -10,7 +10,7 @@ TODO
 # Examples
 
 1. Simple use case
-```
+```kotlin
   // use the PBCodec
   val codec: Codec<PBClass> = PBCodec(clazz = PBClass::class.java)
 
@@ -29,7 +29,7 @@ TODO
 ```
 
 2. Creating generic protobuf repositories. (using `MyTestV3` as example)
-```
+```kotlin
 import com.google.protobuf.Message
 import org.bson.codecs.DocumentCodecProvider
 import org.bson.codecs.IterableCodecProvider
