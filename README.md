@@ -9,10 +9,18 @@ TLDR; `PBCodec<T>` is compatible to
 * [KMongo](https://github.com/Litote/kmongo)
 
 # Gradle
-TODO
+```
+compile 'io.github.gaplotech:kotlin-protobuf-bson-codec:0.1.1'
+```
 
 # Maven
-TODO
+```xml
+<dependency>
+  <groupId>io.github.gaplotech</groupId>
+  <artifactId>kotlin-protobuf-bson-codec</artifactId>
+  <version>0.1.1</version>
+</dependency>
+```
 
 # Examples
 
