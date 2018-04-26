@@ -1,5 +1,12 @@
-# Getting Started
-kotlin-protobuf-bson-codec provide a google protocol buffer BSON codec for MongoDB and it is completely written by Kotlin.
+# Introduction
+`kotlin-protobuf-bson-codec` provide a `PBCodec<T>` to encode/decode from google protocol buffer & BSON genericly. It is 100% written by Kotlin.
+
+from the [official mongo java driver introduction](https://mongodb.github.io/mongo-java-driver/)
+> BSON Library - A standalone BSON library, with a new Codec infrastructure that you can use to build high-performance encoders and decoders without requiring an intermediate Map instance.
+
+TLDR; `PBCodec<T>` is compatible to
+* [Mongo Java driver](https://mongodb.github.io/mongo-java-driver/)
+* [KMongo](https://github.com/Litote/kmongo)
 
 # Gradle
 TODO
@@ -73,3 +80,5 @@ class MyTestV3Repository: MongoPBRepository<MyTestV3>("protodb") {
 }
 
 ```
+
+
