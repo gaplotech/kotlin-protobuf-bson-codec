@@ -15,7 +15,7 @@ buildscript {
 }
 
 group 'io.github.gaplotech'
-version '0.1.1'
+version '0.1.2'
 
 apply plugin: 'idea'
 apply plugin: 'java'
