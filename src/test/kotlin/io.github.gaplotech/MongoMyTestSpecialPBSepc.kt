@@ -2,12 +2,14 @@ import io.github.gaplotech.pb.Test.*
 import com.google.protobuf.*
 import com.google.protobuf.Any
 import com.mongodb.async.client.MongoCollection
-import io.github.gaplotech.repository.MongoPBRepository
+import io.github.gaplotech.repository.MongoRepository
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 import kotlinx.coroutines.experimental.runBlocking
 import org.litote.kmongo.coroutine.findOne
+import org.litote.kmongo.coroutine.getCollectionOfName
 import org.litote.kmongo.coroutine.insertOne
+import org.litote.kmongo.coroutine.singleResult
 import java.util.*
 
 class MongoMyTestSpecialPBSepc : FeatureSpec() {
@@ -46,10 +48,11 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
         val t_stringVal = StringValue.newBuilder().setValue(testString).build()!!
         val t_bytesVal = BytesValue.newBuilder().setValue(ByteString.copyFrom(bytes)).build()!!
     }
+
     init {
-        val repo = object: MongoPBRepository<MyTestSpecial>("test") {
-            override val collection: MongoCollection<MyTestSpecial> = getCollectionWithCodec("prototest.special")
-            suspend fun insertOne(test: MyTestSpecial){
+        val repo = object : MongoRepository<MyTestSpecial>("test") {
+            override val collection: MongoCollection<MyTestSpecial> = database.getCollectionOfName("prototest.special")
+            suspend fun insertOne(test: MyTestSpecial) {
                 collection.insertOne(test)
             }
 
@@ -58,17 +61,17 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
             }
 
             suspend fun drop() {
-                collection.drop { result, t ->  }
+                singleResult<Void> { collection.drop(it) }
             }
         }
 
         feature("mongodb with protobuf") {
-            scenario("drop collection"){
+            scenario("drop collection") {
                 runBlocking {
                     repo.drop()
                 }
             }
-            scenario("save proto "){
+            scenario("save proto ") {
                 runBlocking {
                     val proto = MyTestSpecial.newBuilder().apply {
                         emptyVal = Empty.newBuilder().build()
@@ -91,7 +94,7 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
                 }
             }
 
-            scenario("read proto from db"){
+            scenario("read proto from db") {
                 runBlocking {
                     val proto = repo.findOne()!!
 
