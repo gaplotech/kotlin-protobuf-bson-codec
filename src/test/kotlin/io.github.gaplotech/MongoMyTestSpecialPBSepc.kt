@@ -46,10 +46,11 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
         val t_stringVal = StringValue.newBuilder().setValue(testString).build()!!
         val t_bytesVal = BytesValue.newBuilder().setValue(ByteString.copyFrom(bytes)).build()!!
     }
+
     init {
-        val repo = object: MongoPBRepository<MyTestSpecial>("test") {
+        val repo = object : MongoPBRepository<MyTestSpecial>("test") {
             override val collection: MongoCollection<MyTestSpecial> = getCollectionWithCodec("prototest.special")
-            suspend fun insertOne(test: MyTestSpecial){
+            suspend fun insertOne(test: MyTestSpecial) {
                 collection.insertOne(test)
             }
 
@@ -58,17 +59,17 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
             }
 
             suspend fun drop() {
-                collection.drop { result, t ->  }
+                collection.drop { result, t -> }
             }
         }
 
         feature("mongodb with protobuf") {
-            scenario("drop collection"){
+            scenario("drop collection") {
                 runBlocking {
                     repo.drop()
                 }
             }
-            scenario("save proto "){
+            scenario("save proto ") {
                 runBlocking {
                     val proto = MyTestSpecial.newBuilder().apply {
                         emptyVal = Empty.newBuilder().build()
@@ -91,7 +92,7 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
                 }
             }
 
-            scenario("read proto from db"){
+            scenario("read proto from db") {
                 runBlocking {
                     val proto = repo.findOne()!!
 

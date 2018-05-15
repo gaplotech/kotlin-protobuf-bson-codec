@@ -21,7 +21,7 @@ class MongoMyTestPBSepc : FeatureSpec() {
         const val t_optBool = true
         val t_optDouble = Double.MAX_VALUE
         val t_optFloat = Float.MAX_VALUE
-        val t_primitiveSequenceList = listOf("a","b","c")
+        val t_primitiveSequenceList = listOf("a", "b", "c")
         val t_repMessageList = listOf(MyTestV3.getDefaultInstance())
         val t_stringToInt32Map = mapOf("test" to 12345)
         val t_intToMytestMap = mapOf(1 to MyTestV3.getDefaultInstance())
@@ -31,10 +31,11 @@ class MongoMyTestPBSepc : FeatureSpec() {
         val t_stringToBoolMap = mapOf("test" to true)
         val t_fixed64ToBytesMap = mapOf(Long.MIN_VALUE to ByteString.copyFrom(bytes))
     }
+
     init {
-        val repo = object: MongoPBRepository<MyTestV3>("test") {
+        val repo = object : MongoPBRepository<MyTestV3>("test") {
             override val collection: MongoCollection<MyTestV3> = getCollectionWithCodec("prototest")
-            suspend fun insertOne(test: MyTestV3){
+            suspend fun insertOne(test: MyTestV3) {
                 collection.insertOne(test)
             }
 
@@ -43,17 +44,17 @@ class MongoMyTestPBSepc : FeatureSpec() {
             }
 
             fun drop() {
-                collection.drop { _, _ ->  }
+                collection.drop { _, _ -> }
             }
         }
 
         feature("mongodb with protobuf") {
-            scenario("drop collection"){
+            scenario("drop collection") {
                 runBlocking {
                     repo.drop()
                 }
             }
-            scenario("save proto "){
+            scenario("save proto ") {
                 runBlocking {
                     val proto = MyTestV3.newBuilder().apply {
                         hello = t_hello
@@ -80,7 +81,7 @@ class MongoMyTestPBSepc : FeatureSpec() {
                 }
             }
 
-            scenario("read proto from db"){
+            scenario("read proto from db") {
                 runBlocking {
                     val proto = repo.findOne()!!
 

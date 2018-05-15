@@ -7,8 +7,8 @@ import org.bson.BsonType
 private typealias WellKnownTypeReader = (BsonReader) -> Any
 
 internal class PBBsonReader(
-        private val reader: BsonReader,
-        private val preservedProtoFieldNames: Boolean = false
+    private val reader: BsonReader,
+    private val preservedProtoFieldNames: Boolean = false
 ) {
 
     fun <T> read(clazz: Class<T>): T {
@@ -19,7 +19,7 @@ internal class PBBsonReader(
     }
 
     private fun parseObj(reader: BsonReader, builder: Message.Builder): Any {
-        when(reader.currentBsonType){
+        when (reader.currentBsonType) {
             BsonType.DOCUMENT -> {
                 reader.readStartDocument()
                 while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
@@ -34,7 +34,8 @@ internal class PBBsonReader(
                 }
                 reader.readEndArray()
             }
-            BsonType.END_OF_DOCUMENT -> {}
+            BsonType.END_OF_DOCUMENT -> {
+            }
             else -> {
                 parseValue(reader, builder)
             }
@@ -45,21 +46,21 @@ internal class PBBsonReader(
     private fun parseValue(reader: BsonReader, builder: Message.Builder) {
         val typeDes = builder.descriptorForType
         val name = reader.readName()
-        val snakeName = if(preservedProtoFieldNames) name else Regex("[A-Z]").replace(name) { "_${it.value.toLowerCase()}" }
+        val snakeName = if (preservedProtoFieldNames) name else Regex("[A-Z]").replace(name) { "_${it.value.toLowerCase()}" }
         val descriptor: Descriptors.FieldDescriptor? = typeDes.findFieldByName(snakeName)
 
-        if(descriptor != null){
+        if (descriptor != null) {
             when {
-                descriptor.isMapField -> when(reader.currentBsonType){
+                descriptor.isMapField -> when (reader.currentBsonType) {
                     BsonType.DOCUMENT -> {
                         val mapEntryDesc = descriptor.messageType
                         val keyDescriptor = mapEntryDesc.findFieldByNumber(1)
                         val valueDescriptor = mapEntryDesc.findFieldByNumber(2)
                         reader.readStartDocument()
 
-                        while(reader.readBsonType() != BsonType.END_OF_DOCUMENT){
+                        while (reader.readBsonType() != BsonType.END_OF_DOCUMENT) {
                             val key = reader.readName()
-                            val keyObj: Any = when(keyDescriptor.javaType){
+                            val keyObj: Any = when (keyDescriptor.javaType) {
                                 Descriptors.FieldDescriptor.JavaType.INT -> key.toInt()
                                 Descriptors.FieldDescriptor.JavaType.LONG -> key.toLong()
                                 Descriptors.FieldDescriptor.JavaType.FLOAT -> key.toFloat()
@@ -84,7 +85,7 @@ internal class PBBsonReader(
                         throw PBCodecDecodeException("Expected an object for map field name=$name")
                     }
                 }
-                descriptor.isRepeated -> when(reader.currentBsonType){
+                descriptor.isRepeated -> when (reader.currentBsonType) {
                     BsonType.ARRAY -> {
 
                         reader.readStartArray()
@@ -92,7 +93,7 @@ internal class PBBsonReader(
 
                             val value = parseSingleValue(reader, descriptor)
 
-                            builder.addRepeatedField(descriptor,value)
+                            builder.addRepeatedField(descriptor, value)
 
                         }
                         reader.readEndArray()
@@ -113,7 +114,7 @@ internal class PBBsonReader(
     }
 
     private fun parseSingleValue(reader: BsonReader, descriptor: Descriptors.FieldDescriptor): Any {
-        return when(descriptor.javaType){
+        return when (descriptor.javaType) {
             Descriptors.FieldDescriptor.JavaType.INT -> reader.readInt32()
             Descriptors.FieldDescriptor.JavaType.LONG -> reader.readInt64()
             Descriptors.FieldDescriptor.JavaType.FLOAT -> reader.readDouble().toFloat()
@@ -125,7 +126,7 @@ internal class PBBsonReader(
             Descriptors.FieldDescriptor.JavaType.MESSAGE -> {
                 val specialReader: WellKnownTypeReader? = wellKnownTypeReaders[descriptor.messageType.fullName]
 
-                return if(specialReader != null){
+                return if (specialReader != null) {
                     specialReader.invoke(reader)
                 } else {
                     val subBuilder = DynamicMessage.newBuilder(descriptor.messageType)

@@ -1,6 +1,8 @@
 #Intellij
 .idea
-
+*.iml
+*.ipr
+*.iws
 
 #Java/Kotlin
 # Compiled class file
