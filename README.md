@@ -26,9 +26,7 @@ compile 'io.github.gaplotech:kotlin-protobuf-bson-codec:0.1.1'
 
 ```kotlin
 // register the codec provider
-val registry = CodecRegistries.fromRegistries(
-    MongoClients.getDefaultCodecRegistry(),
-    CodecRegistries.fromProviders(DocumentCodecProvider(), IterableCodecProvider(), PBCodecProvider())
+val registry = CodecRegistries.fromRegistries(PBCodecProvider())
 
 // use the registry for the database
 val collection = createClient()
