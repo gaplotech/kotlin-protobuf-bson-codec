@@ -9,6 +9,7 @@ import kotlinx.coroutines.experimental.runBlocking
 import org.litote.kmongo.coroutine.findOne
 import org.litote.kmongo.coroutine.getCollectionOfName
 import org.litote.kmongo.coroutine.insertOne
+import org.litote.kmongo.coroutine.singleResult
 import java.util.*
 
 class MongoMyTestSpecialPBSepc : FeatureSpec() {
@@ -49,7 +50,7 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
     }
 
     init {
-        val repo = object: MongoRepository<MyTestSpecial>("test") {
+        val repo = object : MongoRepository<MyTestSpecial>("test") {
             override val collection: MongoCollection<MyTestSpecial> = database.getCollectionOfName("prototest.special")
             suspend fun insertOne(test: MyTestSpecial) {
                 collection.insertOne(test)
@@ -60,7 +61,7 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
             }
 
             suspend fun drop() {
-                collection.drop { result, t -> }
+                singleResult<Void> { collection.drop(it) }
             }
         }
 

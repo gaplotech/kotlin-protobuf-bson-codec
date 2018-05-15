@@ -77,6 +77,7 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+kotlin.experimental.coroutines 'enable'
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
