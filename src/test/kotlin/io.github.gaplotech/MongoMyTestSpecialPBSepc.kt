@@ -2,11 +2,12 @@ import io.github.gaplotech.pb.Test.*
 import com.google.protobuf.*
 import com.google.protobuf.Any
 import com.mongodb.async.client.MongoCollection
-import io.github.gaplotech.repository.MongoPBRepository
+import io.github.gaplotech.repository.MongoRepository
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 import kotlinx.coroutines.experimental.runBlocking
 import org.litote.kmongo.coroutine.findOne
+import org.litote.kmongo.coroutine.getCollectionOfName
 import org.litote.kmongo.coroutine.insertOne
 import java.util.*
 
@@ -48,8 +49,8 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
     }
 
     init {
-        val repo = object : MongoPBRepository<MyTestSpecial>("test") {
-            override val collection: MongoCollection<MyTestSpecial> = getCollectionWithCodec("prototest.special")
+        val repo = object: MongoRepository<MyTestSpecial>("test") {
+            override val collection: MongoCollection<MyTestSpecial> = database.getCollectionOfName("prototest.special")
             suspend fun insertOne(test: MyTestSpecial) {
                 collection.insertOne(test)
             }
