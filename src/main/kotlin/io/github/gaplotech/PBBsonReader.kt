@@ -11,7 +11,7 @@ internal class PBBsonReader(
     private val preservedProtoFieldNames: Boolean = false
 ) {
 
-    fun <T> read(clazz: Class<T>): T {
+    fun <T : Message> read(clazz: Class<T>): T {
         val builder = clazz.getDeclaredMethod("newBuilder").invoke(null) as Message.Builder
 
         @Suppress("unchecked_cast")

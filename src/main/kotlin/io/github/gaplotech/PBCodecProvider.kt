@@ -10,7 +10,7 @@ class PBCodecProvider(
     private val preservingProtoFieldNames: Boolean = false
 ) : CodecProvider {
     private val messageClass = Message::class.java
-    override fun <T : Any> get(clazz: Class<T>, registry: CodecRegistry): Codec<T>? {
+    override fun <T> get(clazz: Class<T>, registry: CodecRegistry): Codec<T>? {
         return if (!messageClass.isAssignableFrom(clazz)) null else {
             @Suppress("unchecked_cast")
             PBCodec(clazz as Class<out Message>, includingDefaultValueFields, preservingProtoFieldNames) as Codec<T>

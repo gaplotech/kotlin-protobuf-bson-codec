@@ -3,10 +3,10 @@ package io.github.gaplotech
 import com.google.common.io.BaseEncoding
 import com.google.protobuf.*
 import com.google.protobuf.util.FieldMaskUtil
-import com.google.protobuf.Any as PBAny
 import org.bson.BsonBinary
 import org.bson.BsonWriter
 import java.util.*
+import com.google.protobuf.Any as PBAny
 
 
 private typealias WellKnownTypeWriter = (PBBsonWriter, MessageOrBuilder) -> Unit

@@ -1,16 +1,33 @@
-import io.github.gaplotech.pb.Test.*
 import com.google.protobuf.ByteString
-import io.github.gaplotech.repository.MongoRepository
+import io.github.gaplotech.pb.Test.MyEnumV3
+import io.github.gaplotech.pb.Test.MyTestV3
+import io.github.gaplotech.repository.MongoPBRepository
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 import kotlinx.coroutines.experimental.runBlocking
 import org.litote.kmongo.coroutine.findOne
-import org.litote.kmongo.coroutine.insertOne
 import org.litote.kmongo.coroutine.getCollectionOfName
+import org.litote.kmongo.coroutine.insertOne
 import org.litote.kmongo.coroutine.singleResult
 import java.util.*
 
-class MongoMyTestPBSepc : FeatureSpec() {
+class MongoMyTestPBSpec : FeatureSpec() {
+
+    class MyTestV3Repository : MongoPBRepository<MyTestV3>("test") {
+        override val collection = database.getCollectionOfName<MyTestV3>("prototest")
+        suspend fun insertOne(test: MyTestV3) {
+            collection.insertOne(test)
+        }
+
+        suspend fun findOne(): MyTestV3? {
+            return collection.findOne()
+        }
+
+        suspend fun drop() {
+            singleResult<Void> { collection.drop(it) }
+        }
+    }
+
     companion object {
         private val bytes = ByteArray(10).also { Random().nextBytes(it) }
 
@@ -34,20 +51,7 @@ class MongoMyTestPBSepc : FeatureSpec() {
     }
 
     init {
-        val repo = object : MongoRepository<MyTestV3>("test") {
-            override val collection = database.getCollectionOfName<MyTestV3>("prototest")
-            suspend fun insertOne(test: MyTestV3) {
-                collection.insertOne(test)
-            }
-
-            suspend fun findOne(): MyTestV3? {
-                return collection.findOne()
-            }
-
-            suspend fun drop() {
-                singleResult<Void> { collection.drop(it) }
-            }
-        }
+        val repo = MyTestV3Repository()
 
         feature("mongodb with protobuf") {
             scenario("drop collection") {

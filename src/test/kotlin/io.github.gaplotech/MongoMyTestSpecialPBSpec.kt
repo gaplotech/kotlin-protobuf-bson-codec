@@ -1,8 +1,9 @@
-import io.github.gaplotech.pb.Test.*
 import com.google.protobuf.*
 import com.google.protobuf.Any
 import com.mongodb.async.client.MongoCollection
-import io.github.gaplotech.repository.MongoRepository
+import io.github.gaplotech.pb.Test.MyTestSpecial
+import io.github.gaplotech.pb.Test.MyTestV3
+import io.github.gaplotech.repository.MongoPBRepository
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 import kotlinx.coroutines.experimental.runBlocking
@@ -12,7 +13,23 @@ import org.litote.kmongo.coroutine.insertOne
 import org.litote.kmongo.coroutine.singleResult
 import java.util.*
 
-class MongoMyTestSpecialPBSepc : FeatureSpec() {
+class MongoMyTestSpecialPBSpec : FeatureSpec() {
+
+    class MyTestSpecialRepository : MongoPBRepository<MyTestSpecial>("test") {
+        override val collection: MongoCollection<MyTestSpecial> = database.getCollectionOfName("prototest.special")
+        suspend fun insertOne(test: MyTestSpecial) {
+            collection.insertOne(test)
+        }
+
+        suspend fun findOne(): MyTestSpecial? {
+            return collection.findOne()
+        }
+
+        suspend fun drop() {
+            singleResult<Void> { collection.drop(it) }
+        }
+    }
+
     companion object {
         private val bytes = ByteArray(10).also { Random().nextBytes(it) }
         private const val t_seconds = 100L
@@ -50,20 +67,7 @@ class MongoMyTestSpecialPBSepc : FeatureSpec() {
     }
 
     init {
-        val repo = object : MongoRepository<MyTestSpecial>("test") {
-            override val collection: MongoCollection<MyTestSpecial> = database.getCollectionOfName("prototest.special")
-            suspend fun insertOne(test: MyTestSpecial) {
-                collection.insertOne(test)
-            }
-
-            suspend fun findOne(): MyTestSpecial? {
-                return collection.findOne()
-            }
-
-            suspend fun drop() {
-                singleResult<Void> { collection.drop(it) }
-            }
-        }
+        val repo = MyTestSpecialRepository()
 
         feature("mongodb with protobuf") {
             scenario("drop collection") {
