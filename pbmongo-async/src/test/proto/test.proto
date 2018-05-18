@@ -1,0 +1,8 @@
+syntax = "proto3";
+package io.github.gaplotech.pb;
+
+message HelloWorld {
+    string _id = 1;
+    string hello = 2;
+    int32 world = 3;
+};

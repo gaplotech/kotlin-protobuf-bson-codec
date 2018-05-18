@@ -1,2 +1,3 @@
 rootProject.name = 'kotlin-protobuf-bson-codec'
+include 'pbmongo-async'
 
