@@ -3,12 +3,12 @@ package io.github.gaplotech
 import com.google.protobuf.*
 import org.bson.BsonReader
 import org.bson.BsonType
+import java.util.HashMap
 
 private typealias WellKnownTypeReader = (BsonReader) -> Any
 
 internal class PBBsonReader(
-    private val reader: BsonReader,
-    private val preservedProtoFieldNames: Boolean = false
+    private val reader: BsonReader
 ) {
 
     fun <T : Message> read(clazz: Class<T>): T {
@@ -43,11 +43,22 @@ internal class PBBsonReader(
         return builder.build()
     }
 
+    private val fieldNameMaps = HashMap<Descriptors.Descriptor, Map<String, Descriptors.FieldDescriptor>>()
+
+    private fun getFieldNameMap(descriptor: Descriptors.Descriptor): Map<String, Descriptors.FieldDescriptor> {
+        return fieldNameMaps[descriptor] ?: HashMap<String, Descriptors.FieldDescriptor>().also { fieldNameMap ->
+            descriptor.fields.forEach { field ->
+                fieldNameMap[field.name] = field
+                fieldNameMap[field.jsonName] = field
+            }
+            fieldNameMaps[descriptor] = fieldNameMap
+        }
+    }
+
     private fun parseValue(reader: BsonReader, builder: Message.Builder) {
         val typeDes = builder.descriptorForType
         val name = reader.readName()
-        val snakeName = if (preservedProtoFieldNames) name else Regex("[A-Z]").replace(name) { "_${it.value.toLowerCase()}" }
-        val descriptor: Descriptors.FieldDescriptor? = typeDes.findFieldByName(snakeName)
+        val descriptor: Descriptors.FieldDescriptor? = getFieldNameMap(typeDes)[name]
 
         if (descriptor != null) {
             when {
