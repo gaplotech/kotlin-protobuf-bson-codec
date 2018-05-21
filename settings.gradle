@@ -1,3 +1,4 @@
-rootProject.name = 'kotlin-protobuf-bson-codec'
+rootProject.name = 'kotlin-protobuf-bson-codec-root'
 include 'pbmongo-async'
+include 'kotlin-protobuf-bson-codec'
 
