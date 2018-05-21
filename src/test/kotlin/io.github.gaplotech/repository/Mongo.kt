@@ -20,7 +20,10 @@ abstract class MongoRepository<T>(databaseName: String) {
 // directly read/write protobuf in a collection
 abstract class MongoPBRepository<T : Message>(databaseName: String) : MongoRepository<T>(databaseName) {
 
-    private val registry = CodecRegistries.fromProviders(PBCodecProvider())
+    private val registry = CodecRegistries.fromRegistries(
+        CodecRegistries.fromProviders(PBCodecProvider()),
+        MongoClients.getDefaultCodecRegistry()
+    )
 
     // register generic PBCodecProvider
     override val database: MongoDatabase = super.database.withCodecRegistry(registry)
