@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.2.31'
+        kotlin_version = '1.2.41'
         protobufPluginVersion = '0.8.4'
         protocVersion = '3.5.1'
     }
@@ -15,7 +15,7 @@ buildscript {
 }
 
 group 'io.github.gaplotech'
-version '0.1.2'
+version '0.2.0'
 
 apply plugin: 'idea'
 apply plugin: 'java'
