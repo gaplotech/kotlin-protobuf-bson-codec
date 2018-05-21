@@ -59,3 +59,7 @@ message MyTestSpecial {
     google.protobuf.StringValue string_val = 13;
     google.protobuf.BytesValue bytes_val = 14;
 }
+
+message CamelCase {
+    string camelCase = 1;
+}
