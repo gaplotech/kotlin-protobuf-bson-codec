@@ -51,7 +51,12 @@ class MongoMyTestSpecialPBSpec : FeatureSpec() {
             nanos = t_nanos
         }.build()!!
 
-        val t_struct = Struct.newBuilder().build()!!
+        val t_struct = Struct.newBuilder()
+            .putFields("a", Value.newBuilder().setBoolValue(true).build())
+            .putFields("b", Value.newBuilder().setNumberValue(123.0).build())
+            .putFields("c", Value.newBuilder().setNullValue(NullValue.NULL_VALUE).build())
+            .putFields("d", Value.newBuilder().setStructValue(Struct.newBuilder().putFields("e", Value.newBuilder().setBoolValue(false).build())).build())
+            .build()!!
 
         val t_doubleVal = DoubleValue.newBuilder().setValue(1.0).build()!!
 
