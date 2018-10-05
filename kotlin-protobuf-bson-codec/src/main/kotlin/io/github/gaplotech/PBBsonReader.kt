@@ -4,6 +4,7 @@ import com.google.protobuf.*
 import org.bson.BsonReader
 import org.bson.BsonType
 import java.util.HashMap
+import javax.management.modelmbean.DescriptorSupport
 
 private typealias WellKnownTypeReader = (BsonReader) -> Any
 
@@ -58,7 +59,8 @@ internal class PBBsonReader(
     private fun parseValue(reader: BsonReader, builder: Message.Builder) {
         val typeDes = builder.descriptorForType
         val name = reader.readName()
-        val descriptor: Descriptors.FieldDescriptor? = getFieldNameMap(typeDes)[name]
+        var descriptor: Descriptors.FieldDescriptor? = getFieldNameMap(typeDes)[name]
+
 
         if (descriptor != null) {
             when {
@@ -119,7 +121,32 @@ internal class PBBsonReader(
                     builder.setField(descriptor, value)
                 }
             }
-        } else {
+        }
+        if(typeDes.fullName.equals("google.protobuf.Struct")){
+
+            val structDescriptor = getFieldNameMap(Struct.getDescriptor())["fields"]
+
+            val structBuilder = builder.newBuilderForField(structDescriptor)
+
+            descriptor = getFieldNameMap(Value.getDescriptor())[when(reader.currentBsonType) {
+                BsonType.DOUBLE -> "numberValue"
+                BsonType.ARRAY -> "listValue"
+                BsonType.BOOLEAN -> "boolValue"
+                BsonType.STRING -> "stringValue"
+                BsonType.NULL -> "nullValue"
+                BsonType.DOCUMENT -> "structValue"
+                else -> ""
+            }]
+
+            val value = parseSingleValue(reader, descriptor!!)
+            structBuilder.setField(structDescriptor!!.messageType.fields[0], name)
+
+
+            structBuilder.setField(structDescriptor.messageType.fields[1], Value.newBuilder(value as Value?).build())
+
+            builder.addRepeatedField(structDescriptor, structBuilder.build())
+        }
+        else {
             reader.skipValue()
         }
     }
@@ -135,6 +162,7 @@ internal class PBBsonReader(
             Descriptors.FieldDescriptor.JavaType.BYTE_STRING -> ByteString.copyFrom(reader.readBinaryData().data)
             Descriptors.FieldDescriptor.JavaType.ENUM -> descriptor.enumType.findValueByName(reader.readString())
             Descriptors.FieldDescriptor.JavaType.MESSAGE -> {
+
                 val specialReader: WellKnownTypeReader? = wellKnownTypeReaders[descriptor.messageType.fullName]
 
                 return if (specialReader != null) {
