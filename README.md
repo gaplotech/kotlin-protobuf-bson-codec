@@ -10,11 +10,11 @@ the official google protocol buffer json serialization (`JsonFormat.Parser` & `J
 * [Mongo Java driver](https://mongodb.github.io/mongo-java-driver/)
 * [KMongo](https://github.com/Litote/kmongo)
 
-*Note: Only Proto3 is tested*
+*Note: Only Proto3 is supported*
 
 # Gradle
 ```
-compile 'io.github.gaplotech:kotlin-protobuf-bson-codec:0.2.0'
+compile 'io.github.gaplotech:kotlin-protobuf-bson-codec:0.3.0'
 ```
 
 # Maven
@@ -22,7 +22,7 @@ compile 'io.github.gaplotech:kotlin-protobuf-bson-codec:0.2.0'
 <dependency>
   <groupId>io.github.gaplotech</groupId>
   <artifactId>kotlin-protobuf-bson-codec</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
 </dependency>
 ```
 
