@@ -51,7 +51,34 @@ class MongoMyTestSpecialPBSpec : FeatureSpec() {
             nanos = t_nanos
         }.build()!!
 
-        val t_struct = Struct.newBuilder().build()!!
+        val aVal = Value.newBuilder().setBoolValue(true).build()!!
+        val bVal = Value.newBuilder().setNumberValue(123.0).build()!!
+        val cVal = Value.newBuilder().setNullValue(NullValue.NULL_VALUE).build()!!
+        val dVal = Value.newBuilder().setStructValue(Struct.newBuilder().putFields("e", Value.newBuilder().setBoolValue(false).build())).build()!!
+        val fVal = Value.newBuilder().setStructValue(
+            Struct.newBuilder()
+                .putFields("ff1", Value.newBuilder().setStructValue(
+                    Struct.newBuilder().putFields("fff", aVal)).build()
+                )
+                .putFields("ff2", Value.newBuilder().setStructValue(
+                    Struct.newBuilder().putFields("fff", bVal)).build()
+                )
+                .putFields("ff3", Value.newBuilder().setStructValue(
+                    Struct.newBuilder().putFields("fff", cVal)).build()
+                )
+                .putFields("ff4", Value.newBuilder().setStructValue(
+                    Struct.newBuilder().putFields("fff", dVal)).build()
+                )
+            ).build()!!
+        val t_struct = Struct.newBuilder()
+            .putFields("a", aVal)
+            .putFields("b", bVal)
+            .putFields("c", cVal)
+            .putFields("d", dVal)
+            .putFields("f", fVal)
+            .putFields("list", Value.newBuilder().setListValue(
+                ListValue.newBuilder().addAllValues(listOf(aVal, bVal, cVal, dVal, fVal)).build()).build())
+            .build()!!
 
         val t_doubleVal = DoubleValue.newBuilder().setValue(1.0).build()!!
 
