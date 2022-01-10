@@ -1,10 +1,10 @@
 ext {
-    kotlin_version = '1.2.41'
-    protobufPluginVersion = '0.8.4'
-    protocVersion = '3.5.1'
+    kotlin_version = '1.3.72'
+    protobufPluginVersion = '0.8.17'
+    protocVersion = '3.6.1'
 
     kotlinPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    prtobufPlugin = "com.google.protobuf:protobuf-gradle-plugin:$protobufPluginVersion"
+    protobufPlugin = "com.google.protobuf:protobuf-gradle-plugin:$protobufPluginVersion"
     junitPlugin = 'org.junit.platform:junit-platform-gradle-plugin:1.1.0'
 
 
