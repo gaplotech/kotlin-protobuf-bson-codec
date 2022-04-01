@@ -4,9 +4,9 @@ import com.mongodb.async.client.MongoCollection
 import io.github.gaplotech.pb.Test.MyTestSpecial
 import io.github.gaplotech.pb.Test.MyTestV3
 import io.github.gaplotech.repository.MongoPBRepository
-import io.kotlintest.shouldBe
-import io.kotlintest.specs.FeatureSpec
-import kotlinx.coroutines.experimental.runBlocking
+import io.kotest.matchers.shouldBe
+import io.kotest.core.spec.style.FeatureSpec
+import kotlinx.coroutines.runBlocking
 import org.litote.kmongo.coroutine.findOne
 import org.litote.kmongo.coroutine.getCollectionOfName
 import org.litote.kmongo.coroutine.insertOne
